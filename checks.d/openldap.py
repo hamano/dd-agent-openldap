@@ -17,20 +17,20 @@ class OpenLDAPCheck(AgentCheck):
                  attributes = ['monitoredInfo'])
         for entry in c.response:
             if 'monitoredInfo' in entry['attributes']:
-                res[entry['dn']] = entry['attributes']['monitoredInfo']
+                res[entry['dn']] = entry['attributes']['monitoredInfo'][0]
 
         c.search(search_base = 'cn=Connections,cn=Monitor',
                  search_filter = '(objectClass=monitorCounterObject)',
-                 search_scope = SUBTREE,
+                 search_scope = LEVEL,
                  attributes = ['monitorCounter'])
         for entry in c.response:
             if 'monitorCounter' in entry['attributes']:
-                res[entry['dn']] = entry['attributes']['monitorCounter']
+                res[entry['dn']] = entry['attributes']['monitorCounter'][0]
 
 #        for dn, value in res.iteritems():
 #            print dn, value
 
-        self.gauge('openldap.connections.current', 'cn=Current,cn=Connections,cn=Monitor')
-        self.gauge('openldap.threads.max', 'cn=Max,cn=Threads,cn=Monitor')
-        self.gauge('openldap.threads.open', 'cn=Open,cn=Threads,cn=Monitor')
-        self.gauge('openldap.threads.active', 'cn=Active,cn=Threads,cn=Monitor')
+        self.gauge('openldap.connections.current', int(res['cn=Current,cn=Connections,cn=Monitor']))
+        self.gauge('openldap.threads.max', int(res['cn=Max,cn=Threads,cn=Monitor']))
+        self.gauge('openldap.threads.open', int(res['cn=Open,cn=Threads,cn=Monitor']))
+        self.gauge('openldap.threads.active', int(res['cn=Active,cn=Threads,cn=Monitor']))
