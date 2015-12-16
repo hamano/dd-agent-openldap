@@ -1,0 +1,8 @@
+init_config:
+  verbose: False
+
+instances:
+  - url: 'ldap://127.0.0.1:389'
+    user: cn=Manager,dc=my-domain,dc=com
+    password: XXXXXXXX
+
